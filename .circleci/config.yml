@@ -1,0 +1,77 @@
+version: 2.1  # The version of CircleCI platform being used
+executors:
+  python-docker:
+    working_directory: ~/project
+    docker:
+      - image: cimg/python:3.6
+
+
+jobs:  # The jobs level contains a collection of arbitrarily named children
+  run-tests:
+    executor: python-docker
+    steps:  # The steps collection is an ordered list of run directives
+      - checkout  # "checkout" checks out the source code to "working_directory"
+      - restore_cache:
+          key: pip-deps-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+      - run:
+          name: Install Python Dependencies
+          command: |
+            set -euxo pipefail
+            python -m venv venv
+            source venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -e '.[tests]' -c constraints.txt
+      - save_cache:
+          key: pip-deps-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+          paths:
+            - venv
+      - run:
+          name: Run Linters
+          command: |
+            set -euxo pipefail
+            source venv/bin/activate
+            flake8 osaro_default_python_template tests
+            bandit -r --ini setup.cfg
+            black .
+            isort --recursive --check-only --diff --settings-path setup.cfg \
+              osaro_default_python_template tests
+            mypy --config-file setup.cfg
+      - run:
+          name: Run Pytest
+          command: |
+            set -euxo pipefail
+            source venv/bin/activate
+            pytest -c .circleci/resources/pytest_build_config.ini
+      - run:
+          name: Run Pytest With Mocking Disabled
+          command: |
+            set -euxo pipefail
+            source venv/bin/activate
+            export RUNTIME_ENVIRONMENT="build"
+            pytest -c .circleci/resources/pytest_build_config.ini
+      - run:
+          # TODO: Coverage format & upload disabled for template; please enable in repo
+          name: Upload test coverage to Code Climate
+          command: |
+            # download test reporter as a static
+            mkdir -p codeclimate_temp
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./codeclimate_temp/cc-test-reporter
+            chmod +x ./codeclimate_temp/cc-test-reporter
+            # Format test coverage report to codeclimate format
+            # ./codeclimate_temp/cc-test-reporter format-coverage --input-type coverage.py --output test_reports/coverage/codeclimate_pytest_coverage_report.json test_reports/coverage/pytest_coverage_report.xml
+            # Upload test coverage report to codeclimate
+            # ./codeclimate_temp/cc-test-reporter upload-coverage --input test_reports/coverage/codeclimate_pytest_coverage_report.json
+      - store_test_results:  # Store test results for the build
+          path: test_reports
+      - store_artifacts:  # Store artifacts of the build
+          path: test_reports
+          destination: test-reports
+
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - run-tests:
+        filters:
+          tags:
+            only: /.*/
