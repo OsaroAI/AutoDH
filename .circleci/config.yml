@@ -1,7 +1,7 @@
 version: 2.1  # The version of CircleCI platform being used
 executors:
   python-docker:
-    working_directory: ~/project
+    working_directory: ~/AutoDH 
     docker:
       - image: cimg/python:3.6
 
@@ -66,12 +66,43 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
       - store_artifacts:  # Store artifacts of the build
           path: test_reports
           destination: test-reports
-
+  build-pypi:
+    executor: python-docker
+    steps:
+      - checkout
+      - restore_cache:
+          key: pip-deps-pypi-build-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+      - run:
+          name: Create virtualenv
+          command: |
+            set -euxo pipefail
+            python3 -m venv ~/venv
+            source ~/venv/bin/activate
+            pip install -U pip setuptools wheel
+            pip install -e .[cpu] -c constraints.txt
+      - save_cache:
+          paths:
+            - ~/venv
+          key: pip-deps-pypi-build-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+      - run:
+          name: pypi-upload
+          command: |
+            . ~/venv/bin/activate
+            source .circleci/bin/create_pypirc.sh
+            python3 setup.py build sdist bdist_wheel upload -r osaro-default
 workflows:
   version: 2.1
-  test:
+  tests:
     jobs:
       - run-tests:
         filters:
           tags:
             only: /.*/
+      - build-pypi:
+          requires:
+            - docker
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
