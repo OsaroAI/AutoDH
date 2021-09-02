@@ -66,7 +66,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
       - store_artifacts:  # Store artifacts of the build
           path: test_reports
           destination: test-reports
-  build-pypi:
+  upload-pypi:
     executor: python-docker
     steps:
       - checkout
@@ -98,9 +98,10 @@ workflows:
         filters:
           tags:
             only: /.*/
-      - build-pypi:
+      - upload-pypi:
           requires:
             - docker
+            - run-tests
           filters:
             tags:
               only: /^v.*/
