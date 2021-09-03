@@ -42,13 +42,6 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
             source venv/bin/activate
             pytest -c .circleci/resources/pytest_build_config.ini
       - run:
-          name: Run Pytest With Mocking Disabled
-          command: |
-            set -euxo pipefail
-            source venv/bin/activate
-            export RUNTIME_ENVIRONMENT="build"
-            pytest -c .circleci/resources/pytest_build_config.ini
-      - run:
           # TODO: Coverage format & upload disabled for template; please enable in repo
           name: Upload test coverage to Code Climate
           command: |
