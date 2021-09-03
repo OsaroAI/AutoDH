@@ -1,7 +1,7 @@
 version: 2.1  # The version of CircleCI platform being used
 executors:
   python-docker:
-    working_directory: ~/AutoDH 
+    working_directory: ~/repo
     docker:
       - image: cimg/python:3.6
 
@@ -12,7 +12,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
     steps:  # The steps collection is an ordered list of run directives
       - checkout  # "checkout" checks out the source code to "working_directory"
       - restore_cache:
-          key: pip-deps-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+          key: pip-deps-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
       - run:
           name: Install Python Dependencies
           command: |
@@ -24,7 +24,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
       - save_cache:
           key: pip-deps-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
           paths:
-            - venv
+            - ./venv
       - run:
           name: Run Linters
           command: |
@@ -32,7 +32,6 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
             source venv/bin/activate
             flake8 osaro_default_python_template tests
             bandit -r --ini setup.cfg
-            black .
             isort --recursive --check-only --diff --settings-path setup.cfg \
               osaro_default_python_template tests
             mypy --config-file setup.cfg
@@ -71,19 +70,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
     steps:
       - checkout
       - restore_cache:
-          key: pip-deps-pypi-build-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
-      - run:
-          name: Create virtualenv
-          command: |
-            set -euxo pipefail
-            python3 -m venv ~/venv
-            source ~/venv/bin/activate
-            pip install -U pip setuptools wheel
-            pip install -e .[cpu] -c constraints.txt
-      - save_cache:
-          paths:
-            - ~/venv
-          key: pip-deps-pypi-build-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
+          key: pip-deps-v1-{{ checksum "constraints.txt" }}-{{ checksum "setup.py" }}-{{ arch }}
       - run:
           name: pypi-upload
           command: |
@@ -107,3 +94,4 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+              
