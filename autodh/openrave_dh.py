@@ -1,6 +1,4 @@
-import click
 import numpy as np
-import openravepy as rave
 from .autodh import create_dh_table, DHTable, Joint
 
 
@@ -9,14 +7,6 @@ try:
     input = raw_input
 except NameError:
     pass
-
-Rave2AutoDH = {
-    rave.JointType.Hinge: Joint.Type.Revolute,
-    rave.JointType.Revolute: Joint.Type.Revolute,
-    rave.JointType.Prismatic: Joint.Type.Prismatic,
-    rave.JointType.Slider: Joint.Type.Prismatic,
-}
-
 
 def get_dh_table(robot, base_link, ee_link, modified_dh, validate):
     chain = robot.GetChain(base_link.GetIndex(), ee_link.GetIndex())
@@ -35,7 +25,7 @@ def get_dh_table(robot, base_link, ee_link, modified_dh, validate):
             continue
         axis = j.GetAxis()
         anchor = j.GetAnchor()
-        joint_type = Rave2AutoDH[j.GetType()]
+        joint_type = j.GetType()
         joints.append(Joint(axis, anchor, joint_type))
 
     # Get base and ee frames
@@ -61,22 +51,3 @@ def get_dh_table(robot, base_link, ee_link, modified_dh, validate):
         assert np.allclose(dh.forward(rand_dof_values), ee_transform)
 
     return dh
-
-
-def _load_and_validate_robot(ctx, param, value):
-    env = rave.Environment()
-    env.StopSimulation()
-    try:
-        robot = env.ReadRobotURI(value)
-        env.Add(robot)
-    except Exception as e:
-        raise click.BadParameter("couldn't load robot from \"{}\"".format(value), param=param) from e
-    ctx.params['env'] = env
-    return robot
-
-
-def _validate_link(ctx, param, value):
-    link = ctx.params['robot'].GetLink(value)
-    if link is None:
-        raise click.BadParameter("{}".format(value), param=param)
-    return link
