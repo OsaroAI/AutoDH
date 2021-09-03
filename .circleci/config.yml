@@ -80,7 +80,6 @@ workflows:
             only: /.*/
       - upload-pypi:
           requires:
-            - docker
             - run-tests
           filters:
             tags:
