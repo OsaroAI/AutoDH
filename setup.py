@@ -1,11 +1,13 @@
 from setuptools import find_packages, setup
+import versioneer
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name="osaro-AutoDH",
-    version="0.2",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     author="Eddie Groshev",
     url="https://github.com/OsaroAI/AutoDH",
     description="Library for automatic extraction of Denavit-Hartenberg parameters",
@@ -29,6 +31,15 @@ setup(
             "pytest",
             "pytest-cov",
             "pytest-mock",
+            "flake8>=3.7.9,<4",
+            "isort>=5.8.0,<6",
+            "mypy>=0.910,<1",
+            "pytest-cov",
+            "pytest-env",
+            "pytest-html",
+            "pytest-mock",
+            "pytest-timeout",
+            "pytest>=6.2.3,<7",
         ],
     },
 )

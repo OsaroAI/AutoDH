@@ -1,8 +1,8 @@
 import click
 import numpy as np
 import openravepy as rave
-
 from .autodh import create_dh_table, DHTable, Joint
+
 
 # Python 2/3 compatibility
 try:
