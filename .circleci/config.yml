@@ -72,7 +72,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
             python3 setup.py build sdist bdist_wheel upload -r osaro-default
 workflows:
   version: 2.1
-  tests:
+  test-build:
     jobs:
       - run-tests:
         filters:
