@@ -1,5 +1,5 @@
-import numpy as np
 from .autodh import create_dh_table, DHTable, Joint
+import numpy as np
 
 
 # Python 2/3 compatibility
