@@ -25,6 +25,8 @@ setup(
         "click",
         "numpy",
         "prettytable",
+        "flake8",
+        "bandit"
     ],
     extras_require={
         "test": [
