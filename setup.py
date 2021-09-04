@@ -27,7 +27,8 @@ setup(
         "prettytable",
         "flake8",
         "bandit",
-        "isort"
+        "isort",
+        "mypy"
     ],
     extras_require={
         "test": [
