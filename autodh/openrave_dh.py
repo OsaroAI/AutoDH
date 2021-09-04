@@ -8,6 +8,7 @@ try:
 except NameError:
     pass
 
+
 def get_dh_table(robot, base_link, ee_link, modified_dh, validate):
     chain = robot.GetChain(base_link.GetIndex(), ee_link.GetIndex())
     indices = [j.GetJointIndex() for j in chain if not j.IsStatic()]
