@@ -26,7 +26,8 @@ setup(
         "numpy",
         "prettytable",
         "flake8",
-        "bandit"
+        "bandit",
+        "isort"
     ],
     extras_require={
         "test": [
