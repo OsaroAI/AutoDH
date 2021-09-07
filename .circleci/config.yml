@@ -33,7 +33,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
             flake8 autodh autodh/tests
             bandit -r --ini setup.cfg
             # isort --recursive --check-only --diff --settings-path setup.cfg autodh autodh/tests
-            mypy --config-file setup.cfg
+            # mypy --config-file setup.cfg
       - run:
           name: Run Pytest
           command: |
