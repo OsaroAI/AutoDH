@@ -28,7 +28,8 @@ setup(
         "flake8",
         "bandit",
         "isort",
-        "mypy"
+        "mypy",
+        "pytest"
     ],
     extras_require={
         "test": [
