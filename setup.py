@@ -35,12 +35,10 @@ setup(
     ],
     extras_require={
         "test": [
-            "pytest",
-            "pytest-cov",
-            "pytest-mock",
             "flake8>=3.7.9,<4",
             "isort>=5.8.0,<6",
             "mypy>=0.910,<1",
+            "pytest",
             "pytest-cov",
             "pytest-env",
             "pytest-html",
