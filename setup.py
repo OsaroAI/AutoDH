@@ -29,12 +29,9 @@ setup(
         "bandit",
         "isort",
         "mypy",
-        "pytest",
-        "pytest-cov",
-        "pytest-mock"
     ],
     extras_require={
-        "test": [
+        "tests": [
             "flake8>=3.7.9,<4",
             "isort>=5.8.0,<6",
             "mypy>=0.910,<1",
