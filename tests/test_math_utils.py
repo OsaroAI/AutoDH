@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from .. import math_utils
+from autodh import math_utils
 
 
 def sample_unit_vector(size=3):

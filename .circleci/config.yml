@@ -67,7 +67,7 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
       - run:
           name: pypi-upload
           command: |
-            . ~/venv/bin/activate
+            source venv/bin/activate
             source .circleci/bin/create_pypirc.sh
             python3 setup.py build sdist bdist_wheel upload -r osaro-default
 workflows:
