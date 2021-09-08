@@ -1,8 +1,8 @@
-import numpy as np
-import pytest
 from autodh.autodh import create_dh_table, get_dh_parameters
 from autodh.dh_table import DHTable
 from autodh.joint import Joint
+import numpy as np
+import pytest
 
 from .test_math_utils import sample_unit_vector
 
