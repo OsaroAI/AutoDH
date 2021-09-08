@@ -12,7 +12,11 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
     steps:  # The steps collection is an ordered list of run directives
       - checkout  # "checkout" checks out the source code to "working_directory"
       - restore_cache:
-          key: pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}-{{ checksum "constraints.txt" }}
+          key: 
+            - pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}-{{ checksum "constraints.txt" }}
+            - pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}
+            - pip-deps-v1-{{ arch }}
+            - pip-deps-v1
       - run:
           name: Install Python Dependencies
           command: |
@@ -22,7 +26,11 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
             pip install -U pip setuptools wheel
             pip install -e '.[tests]' -c constraints.txt
       - save_cache:
-          key: pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}-{{ checksum "constraints.txt" }}
+          key:
+            - pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}-{{ checksum "constraints.txt" }}
+            - pip-deps-v1-{{ arch }}-{{ checksum "setup.py" }}
+            - pip-deps-v1-{{ arch }}
+            - pip-deps-v1
           paths:
             - ./venv
       - run:
