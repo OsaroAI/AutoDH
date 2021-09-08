@@ -1,0 +1,2 @@
+include versioneer.py
+include autodh/_version.py
