@@ -25,10 +25,7 @@ setup(
         "click",
         "numpy",
         "prettytable",
-        "flake8",
         "bandit",
-        "isort",
-        "mypy",
     ],
     extras_require={
         "tests": [
