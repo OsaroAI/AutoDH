@@ -30,10 +30,10 @@ jobs:  # The jobs level contains a collection of arbitrarily named children
           command: |
             set -euxo pipefail
             source venv/bin/activate
-            flake8 autodh autodh/tests
+            flake8 autodh tests
             bandit -r --ini setup.cfg
             # TODO -- make these pass on the forked repo
-            # isort --recursive --check-only --diff --settings-path setup.cfg autodh autodh/tests
+            # isort --recursive --check-only --diff --settings-path setup.cfg autodh tests
             # mypy --config-file setup.cfg
       - run:
           name: Run Pytest
